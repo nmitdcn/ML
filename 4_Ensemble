@@ -1,0 +1,55 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import VotingClassifier, BaggingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+iris = load_iris()
+X, y = iris.data, iris.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+log_clf = LogisticRegression(random_state=42)
+knn_clf = KNeighborsClassifier()
+dt_clf = DecisionTreeClassifier(random_state=42)
+
+voting_clf = VotingClassifier(
+    estimators=[('lr', log_clf), ('knn', knn_clf), ('dt', dt_clf)],
+    voting='hard'
+)
+
+voting_clf.fit(X_train, y_train)
+y_pred_voting = voting_clf.predict(X_test)
+print("Voting Classifier Accuracy:", accuracy_score(y_test, y_pred_voting))
+
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+# Bagging Classifier
+bagging_clf = BaggingClassifier(
+    estimator=DecisionTreeClassifier(),  # Use `estimator` instead of `base_estimator`
+    n_estimators=10,
+    random_state=42
+)
+
+bagging_clf.fit(X_train, y_train)
+y_pred_bagging = bagging_clf.predict(X_test)
+
+print("Bagging Classifier Accuracy:", accuracy_score(y_test, y_pred_bagging))
+
+from sklearn.ensemble import RandomForestClassifier
+
+rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_clf.fit(X_train, y_train)
+y_pred_rf = rf_clf.predict(X_test)
+
+print("Random Forest Classifier Accuracy:", accuracy_score(y_test, y_pred_rf))
+
+from sklearn.ensemble import RandomForestClassifier
+
+rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_clf.fit(X_train, y_train)
+y_pred_rf = rf_clf.predict(X_test)
+
+print("Random Forest Classifier Accuracy:", accuracy_score(y_test, y_pred_rf))
